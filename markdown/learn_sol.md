@@ -199,3 +199,24 @@
 
 #### 单位和全局变量
 
+### 应用二进制接口
+01. 函数选择器
+    - 一个函数调用数据的前4字节，指定了要调用的函数。这就是某个函数签名的Keccak(SHA-3)哈希的前4个字节（高位在左的大端序）
+02. 参数编码
+    - 第5个字节开始时被编码的参数
+03. 类型
+    - uint<M>, int<M>, address, uint256(uint), int256(int), uint8(bool), finxed<M>x<N>, ufixed<M>x<N>, fixed128x18(fixed), ufixed128x18(ufixed), bytes<M>, function(bytes24), <type>[M], bytes, string, <type>[], (T1,T2,...,Tn)
+    - ABI元组时用sol的structs编码得到
+04. 编码的形式化说明
+    - 读取次数取决于参数数组结构中的最大深度
+    - 一个变量或数组元素的数据，不会被插入其他的数据，并且是可以再定位的（相对“地址”）
+    - 静态类型会被直接编码；动态类型会在当前数据块之后单独分配的位置被编码
+    - 动态：bytes, string, 任意类型T的变成数组T[\], 任意动态类型T的定长数组T[k], 由动态的Ti构成的元组
+    - len(enc(X)), enc定义为一个由ABI类型到二进制字符串的值的映射，X是动态的，len(enc(X))才会依赖于X
+    - 对任意X，len(enc(X))都是32的倍数
+05. 函数选择器何参数编码
+    - function_selector(f) enc((a_1, ..., a_n)), enc((v_1, ..., v_k))
+    - 字节数偏移量是他们的数据区域的起始位置
+
+NatSpec
+Yul
